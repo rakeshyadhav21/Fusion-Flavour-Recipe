@@ -7,10 +7,7 @@ import { GoogleLogin } from '@react-oauth/google';
 
 const Login = () => {
   const navigate = useNavigate();
-  const [formData, setFormData] = useState<LoginFormData>({
-    email: '',
-    password: '',
-  });
+  const [formData, setFormData] = useState<LoginFormData>({ email: '', password: '' });
   const { signIn, isLoading, googleSignIn } = useAuth();
   const [errors, setErrors] = useState<Record<string, string>>({});
 
@@ -34,16 +31,14 @@ const Login = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrors({});
-    const { email, password } = formData;
     try {
-      await signIn(email, password);
+      await signIn(formData.email, formData.password);
       navigate('/', { replace: true });
     } catch (err: any) {
       setErrors({ submit: err.message });
     }
   };
 
-  // Update Google login handler
   const handleGoogleSuccess = async (credentialResponse: any) => {
     try {
       await googleSignIn(credentialResponse.credential);
@@ -54,127 +49,93 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen bg-white-100 flex-center py-12 px-4">
-      <div className="max-w-md w-full mx-auto">
-        <div className="startup-form hover:shadow-xl">
-          <div className="text-center mb-8">
-            <div className="bg-primary-100 w-20 h-20 rounded-full flex-center mx-auto mb-4 shadow-md">
-              <ChefHat className="h-12 w-12 text-primary" />
+    <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
+      <div className="bg-white shadow-lg rounded-xl p-8 max-w-md w-full">
+        <div className="text-center mb-6">
+          <ChefHat className="h-16 w-16 text-primary mx-auto" />
+          <h1 className="text-2xl font-bold mt-4">Welcome Back</h1>
+          <p className="text-gray-600">Sign in to continue to Flavour Fusion</p>
+        </div>
+
+        {errors.submit && (
+          <div className="bg-red-50 border-l-4 border-red-500 p-4 mb-4 text-red-700">
+            {errors.submit}
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email Address</label>
+            <div className="relative mt-1">
+              <Mail className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
+              <input
+                type="email"
+                id="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                placeholder="you@example.com"
+                className="w-full pl-10 p-2 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary"
+              />
             </div>
-            <h1 className="text-30-bold">Welcome Back</h1>
-            <p className="text-16-medium text-black-100 mt-2">
-              Sign in to continue to Flavour Fusion
-            </p>
+            {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
           </div>
 
-          {errors.submit && (
-            <div className="bg-red-50 border-l-4 border-red-500 p-4 mb-6 rounded-lg">
-              <p className="text-red-700 font-medium">{errors.submit}</p>
+          <div>
+            <div className="flex justify-between items-center">
+              <label htmlFor="password" className="block text-sm font-medium text-gray-700">Password</label>
+              <a href="#" className="text-sm text-primary hover:underline">Forgot Password?</a>
             </div>
-          )}
-
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div>
-              <label htmlFor="email" className="startup-form_label">
-                Email Address
-              </label>
-              <div className="relative">
-                {/* <div className="form-icon-container">
-                  <Mail className="form-icon" />
-                </div> */}
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  placeholder="you@example.com"
-                  className="startup-form_input pl-12"
-                  aria-describedby={errors.email ? "email-error" : undefined}
-                />
-              </div>
-              {errors.email && (
-                <p id="email-error" className="startup-form_error">{errors.email}</p>
-              )}
+            <div className="relative mt-1">
+              <Lock className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
+              <input
+                type="password"
+                id="password"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                placeholder="Enter your password"
+                className="w-full pl-10 p-2 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary"
+              />
             </div>
-
-            <div>
-              <div className="flex-between mb-2">
-                <label htmlFor="password" className="startup-form_label">
-                  Password
-                </label>
-                <a 
-                  href="#" 
-                  className="text-sm text-primary hover:underline font-medium transition-colors duration-300"
-                >
-                  Forgot Password?
-                </a>
-              </div>
-              <div className="relative">
-                {/* <div className="form-icon-container">
-                  <Lock className="form-icon" />
-                </div> */}
-                <input
-                  type="password"
-                  id="password"
-                  name="password"
-                  value={formData.password}
-                  onChange={handleChange}
-                  placeholder="Enter your password"
-                  className="startup-form_input pl-12"
-                  aria-describedby={errors.password ? "password-error" : undefined}
-                />
-              </div>
-              {errors.password && (
-                <p id="password-error" className="startup-form_error">{errors.password}</p>
-              )}
-            </div>
-
-            <button
-              type="submit"
-              disabled={isLoading}
-              className="startup-form_btn"
-            >
-              {isLoading ? (
-                <span className="flex-center gap-2">
-                  <Loader2 className="h-5 w-5 animate-spin" />
-                  Signing in...
-                </span>
-              ) : (
-                <span className="flex-center gap-2">
-                  <LogIn className="h-5 w-5" />
-                  Sign In
-                </span>
-              )}
-            </button>
-          </form>
-
-          <div className="form-divider my-8">
-            <span className="form-divider-text">OR</span>
+            {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password}</p>}
           </div>
 
-          <div className="flex justify-center">
-            <GoogleLogin
-              onSuccess={handleGoogleSuccess}
-              onError={() => {
-                setErrors({ submit: 'Google login failed. Please try again.' });
-              }}
-              useOneTap
-              theme="outline"
-              shape="rectangular"
-              text="continue_with"
-              width="100%"
-            />
-          </div>
+          <button
+            type="submit"
+            disabled={isLoading}
+            className="w-full bg-primary text-white p-2 rounded-lg flex items-center justify-center gap-2 font-medium hover:bg-primary-dark transition"
+          >
+            {isLoading ? <Loader2 className="h-5 w-5 animate-spin" /> : <LogIn className="h-5 w-5" />}
+            Sign In
+          </button>
+        </form>
 
-          <div className="mt-8 text-center">
-            <p className="text-16-medium text-black-100">
-              Don't have an account?{' '}
-              <Link to="/sign-up" className="text-primary hover:underline font-semibold transition-colors duration-300">
-                Sign up
-              </Link>
-            </p>
+        <div className="relative my-6">
+          <div className="absolute inset-0 flex items-center">
+            <div className="w-full border-t border-gray-300"></div>
           </div>
+          <div className="relative text-center">
+            <span className="bg-white px-2 text-gray-600">OR</span>
+          </div>
+        </div>
+
+        <div className="flex justify-center">
+          <GoogleLogin
+            onSuccess={handleGoogleSuccess}
+            onError={() => setErrors({ submit: 'Google login failed. Please try again.' })}
+            useOneTap
+            theme="outline"
+            shape="rectangular"
+            text="continue_with"
+          />
+        </div>
+
+        <div className="mt-6 text-center">
+          <p className="text-gray-600">
+            Don't have an account?{' '}
+            <Link to="/sign-up" className="text-primary font-medium hover:underline">Sign up</Link>
+          </p>
         </div>
       </div>
     </div>

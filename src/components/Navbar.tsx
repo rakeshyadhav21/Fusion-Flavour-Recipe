@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { ChefHat, LogIn, LogOut } from 'lucide-react';
+import { UtensilsCrossed , LogIn, LogOut } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 const Navbar = () => {
@@ -15,27 +15,27 @@ const Navbar = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           <Link to="/" className="flex items-center space-x-2">
-            <ChefHat className="h-8 w-8 text-primary" />
+            <UtensilsCrossed  className="h-8 w-8 text-primary" />
             <span className="text-24-black">Flavour Fusion</span>
           </Link>
 
           <div className="flex items-center space-x-6">
-            <Link to="/recipes" className="text-16-medium hover:text-primary transition-colors">
+            {/* <Link to="/recipes" className="text-16-medium hover:text-primary transition-colors">
               Recipes
-            </Link>
+            </Link> */}
             
-            <Link to="/pricing" className="text-16-medium hover:text-primary transition-colors">
+            {/* <Link to="/pricing" className="text-16-medium hover:text-primary transition-colors">
               Pricing
             </Link>
-            
+             */}
             {user && (
               <>
                 <Link to="/create" className="text-16-medium hover:text-primary transition-colors">
                   Create Recipe
                 </Link>
-                <Link to="/dashboard" className="text-16-medium hover:text-primary transition-colors">
+                {/* <Link to="/dashboard" className="text-16-medium hover:text-primary transition-colors">
                   Dashboard
-                </Link>
+                </Link> */}
               </>
             )}
             
